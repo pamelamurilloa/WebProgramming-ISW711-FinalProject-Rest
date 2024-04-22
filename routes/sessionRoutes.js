@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router()
 
 const {
-    userLogin,
+    loginHandler,
     kidCompare
   } = require("../controllers/sessionController.js");
 
-router.get("/:email/:password", userLogin);
+router.get("/login", loginHandler);
 router.get("/kids/:id/:pin", kidCompare);
 
 module.exports = router;

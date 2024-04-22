@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const Kid = require("../models/kidModel");
+const passport = require("../security");
 
 /**
  * Compares passwords
@@ -7,22 +8,38 @@ const Kid = require("../models/kidModel");
  * @param {*} req
  * @param {*} res
  */
-const userLogin = (req, res) => {
-    const email = req.params.email;
-    const password = req.params.password;
+
+
+const userLogin = async (req, res) => {
+  console.log(req.user)
+  res.json(req.user)
   
-    User.findOne({ email: email, password: password })
-    .then( (user) => {
-        res.status(200);
-        res.json(user);
-    })
-    .catch(err => {
-      res.status(404);
-      console.log('error while trying to find the user', err)
-      res.json({ error: "User doesnt exist" })
-    });
+  // const email = req.body.email
+    // const password = req.body.password
+
+    // if (!email || !password) {
+    //   res.status(400)
+    //   return res.json({error: "Missing credentials"})
+    // }
+
+    // User.findOne({ email: email, password: password })
+    // .then( (user) => {
+    //     res.status(200);
+    //     res.json(user);
+    // })
+    // .catch(err => {
+    //   res.status(404);
+    //   console.log('error while trying to find the user', err)
+    //   res.json({ error: "User doesnt exist" })
+    // });
   
   }
+
+const loginHandler = [
+  passport.authenticate('local', {session:false}),
+  userLogin,
+
+];
 
 const kidCompare = (req, res) => {
     const childId = req.params.id;
@@ -41,6 +58,6 @@ const kidCompare = (req, res) => {
 }
 
   module.exports = {
-    userLogin,
+    loginHandler,
     kidCompare
   }

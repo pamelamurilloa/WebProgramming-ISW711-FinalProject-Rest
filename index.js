@@ -26,7 +26,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/tubekids', routes);
+app.use('/rest', routes);
 
 app.listen(3000, () => {
     console.log(`Server Started at ${3000}`)

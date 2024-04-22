@@ -32,6 +32,7 @@ const user = new mongoose.Schema({
         type: Date
     },
     kids: [{ type: Schema.Types.ObjectId, ref: 'Kid' }],
+    salt: String
 })
 
 module.exports = mongoose.model('User', user);
