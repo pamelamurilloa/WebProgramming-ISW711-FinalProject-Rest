@@ -10,19 +10,17 @@ const passport = require("../security");
  */
 
 const userConfirmCode = async (req, res) => {
-    let user = await User.findById(req.user._id)
-    if (user.state === req.code) {
-        user.state = 'Logged in';
-        await user.save()
-        .then (data => {
-          res.status(200); // Successfull login
-          res.json(data);
-        })
-        .catch (err => {
-          res.status(422);
-          console.log('error while confirming the code', err);
-          res.json({error: 'There was an error confirming the code'});
-        })
+    let user = await User.findById(req.body.userId)
+    if (user.code && user.code === req.body.code) {
+        user.code = null
+        try {
+          const data = await user.save()
+          res.json(data)
+        } catch (error) {
+          res.status(422)
+          console.log('error while confirming the code', err)
+          res.json({error: 'There was an error confirming the code'})
+        }
     }
 }
 
@@ -35,16 +33,14 @@ const userLogin = async (req, res) => {
 
         user.state = code;
 
-        await user.save()
-        .then (data => {
-          res.status(200); // Saved
+        try {
+          const data = await user.save()
           res.json(data);
-        })
-        .catch (err => {
-          res.status(422);
-          console.log('error while saving the user', err);
+
+        } catch (error) {
+          res.status(422)
           res.json({error: 'There was an error saving the user'});
-        })
+        }
     } else {
       res.json({ error: "Incorrect email or password" })
     }

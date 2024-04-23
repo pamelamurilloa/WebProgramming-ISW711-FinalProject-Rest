@@ -17,10 +17,18 @@ const userPost = async (req, res) => {
   user.name  = req.body.name;
   user.lastname  = req.body.lastname;
   user.country  = req.body.country;
-  user.birthdate  = moment(req.body.birthdate).format('YYYY-MM-DD');
+  user.birthday  = moment(req.body.birthday).format('YYYY-MM-DD');
   user.kids = [];
 
-  if (user.email && user.password && user.pin && user.name && user.lastname && user.birthdate && user.kids) {
+  let today = new Date();
+  let birthday = new Date(user.birthday);
+  let age = today.getFullYear() - birthday.getFullYear();
+  let monthDiff = today.getMonth() - birthday.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+      age--;
+  }
+
+  if (user.email && user.password && user.pin && user.name && user.lastname && user.birthday && age >= 18 && user.kids) {
     await user.save()
       .then(data => {
         res.status(201); // Created
@@ -98,8 +106,8 @@ const userPatch = async (req, res) => {
     user.pin = req.body.pin ? req.body.pin : user.pin;
     user.name = req.body.name ? req.body.name : user.name;
     user.lastname = req.body.lastname ? req.body.lastname : user.lastname;
-    user.country = req.body.country ? req.body.country : user.country;
-    user.birthdate = req.body.birthdate ? req.body.birthdate : user.birthdate;
+    user.cellphone = req.body.cellphone ? req.body.cellphone : user.cellphone;
+    user.birthday = req.body.birthday ? req.body.birthday : user.birthday;
     user.kids = req.body.kids ? req.body.kids : user.kids;
 
     await user.save()
