@@ -9,30 +9,46 @@ const passport = require("../security");
  * @param {*} res
  */
 
+const userConfirmCode = async (req, res) => {
+    let user = await User.findById(req.user._id)
+    if (user.state === req.code) {
+        user.state = 'Logged in';
+        await user.save()
+        .then (data => {
+          res.status(200); // Successfull login
+          res.json(data);
+        })
+        .catch (err => {
+          res.status(422);
+          console.log('error while confirming the code', err);
+          res.json({error: 'There was an error confirming the code'});
+        })
+    }
+}
 
 const userLogin = async (req, res) => {
-  console.log(req.user)
-  res.json(req.user)
-  
-  // const email = req.body.email
-    // const password = req.body.password
+    const code = (Math.floor(Math.random() * 1000) + 1000).toString();
 
-    // if (!email || !password) {
-    //   res.status(400)
-    //   return res.json({error: "Missing credentials"})
-    // }
+    if (req.user) {
+        sendMessage(req.user.cellphone, code) //Sends a code to the user's cellphone
+        let user = await User.findById(req.user._id)
 
-    // User.findOne({ email: email, password: password })
-    // .then( (user) => {
-    //     res.status(200);
-    //     res.json(user);
-    // })
-    // .catch(err => {
-    //   res.status(404);
-    //   console.log('error while trying to find the user', err)
-    //   res.json({ error: "User doesnt exist" })
-    // });
-  
+        user.state = code;
+
+        await user.save()
+        .then (data => {
+          res.status(200); // Saved
+          res.json(data);
+        })
+        .catch (err => {
+          res.status(422);
+          console.log('error while saving the user', err);
+          res.json({error: 'There was an error saving the user'});
+        })
+    } else {
+      res.json({ error: "Incorrect email or password" })
+    }
+
   }
 
 const loginHandler = [
@@ -59,5 +75,6 @@ const kidCompare = (req, res) => {
 
   module.exports = {
     loginHandler,
-    kidCompare
+    kidCompare,
+    userConfirmCode
   }

@@ -21,7 +21,7 @@ router.patch("/:id/:videoId", playlistPatchVideo); // Updates a video in a playl
 router.put("/:id", playlistPatch);
 router.put("/:id/:videoId", playlistPatchVideo); // Updates a video in a playlist
 router.delete("/:id", playlistDelete);
-router.delete("/:id/:videoId", playlistDeleteVideo); // Deletes a video in  aplaylist
+router.delete("/:id/:videoId", playlistDeleteVideo); // Deletes a video in a playlist
 
 
 module.exports = router;

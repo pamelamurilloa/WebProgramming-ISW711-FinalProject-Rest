@@ -13,8 +13,6 @@ passport.use(new LocalStrategy(
 
         if (!user) { return cb(null, false, { message: 'Incorrect email or password.' }); }
 
-        return cb(null, user);
-
         crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
             if (err) { return cb(err); }
             if (!crypto.timingSafeEqual(user.hashed_password, hashedPassword)) {

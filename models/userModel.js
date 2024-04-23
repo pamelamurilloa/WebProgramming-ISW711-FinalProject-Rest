@@ -23,15 +23,19 @@ const user = new mongoose.Schema({
         required: true,
         type: String
     },
-    country: {
-        required: false,
-        type: String
+    cellphone: {
+        required: true,
+        type: Number
     },
     birthdate: {
         required: true,
         type: Date
     },
     kids: [{ type: Schema.Types.ObjectId, ref: 'Kid' }],
+    state:{
+        required: true,
+        type: String
+    },
     salt: String
 })
 
