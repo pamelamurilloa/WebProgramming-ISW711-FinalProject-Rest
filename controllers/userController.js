@@ -16,7 +16,8 @@ const userPost = async (req, res) => {
   user.pin  = req.body.pin;
   user.name  = req.body.name;
   user.lastname  = req.body.lastname;
-  user.country  = req.body.country;
+  user.cellphone  = req.body.cellphone;
+  user.state  = 'pending';
   user.birthday  = moment(req.body.birthday).format('YYYY-MM-DD');
   user.kids = [];
 
@@ -28,7 +29,7 @@ const userPost = async (req, res) => {
       age--;
   }
 
-  if (user.email && user.password && user.pin && user.name && user.lastname && user.birthday && age >= 18 && user.kids) {
+  if (user.email && user.password && user.pin && user.name && user.lastname && user.cellphone && user.birthday && age >= 18 && user.kids) {
     await user.save()
       .then(data => {
         res.status(201); // Created

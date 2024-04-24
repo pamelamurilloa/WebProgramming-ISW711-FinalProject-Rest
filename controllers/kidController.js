@@ -29,8 +29,6 @@ const kidPost = async (req, res) => {
     kid.avatar = req.body.avatar;
     kid.age  = req.body.age;
 
-    console.log(kid.name +", "+kid.pin+", "+kid.avatar+", "+kid.age+", "+user);
-
     // Saves the kid with their parent
     if (user && kid.name && kid.pin && kid.avatar && kid.age) {
         let newKid = await kid.save()
