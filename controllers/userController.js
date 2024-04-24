@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Kid = require("../models/kidModel");
 var moment = require('moment');
+const { ConversationContextImpl } = require("twilio/lib/rest/conversations/v1/conversation");
 /**
  * Creates a user
  *
@@ -15,7 +16,7 @@ const userPost = async (req, res) => {
   user.password  = req.body.password;
   user.pin  = req.body.pin;
   user.name  = req.body.name;
-  user.lastname  = req.body.lastname;
+  user.lastName  = req.body.lastName;
   user.cellphone  = req.body.cellphone;
   user.state  = 'pending';
   user.birthday  = moment(req.body.birthday).format('YYYY-MM-DD');
@@ -28,27 +29,27 @@ const userPost = async (req, res) => {
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
       age--;
   }
+  
+  if (user.email && user.password && user.pin && user.name && user.lastName && user.cellphone && user.birthday && age >= 18 && user.kids) {
+    
+    try {
+      const data = await user.save()
+      console.log(data)
 
-  if (user.email && user.password && user.pin && user.name && user.lastname && user.cellphone && user.birthday && age >= 18 && user.kids) {
-    await user.save()
-      .then(data => {
-        res.status(201); // Created
-        res.header({
-          'location': `/tubekids/users/?id=${data.id}`
-        });
-        res.json(data);
-      })
-      .catch( err => {
+      res.status(201); // Created
+      res.json(data)
+
+    } catch( err ) {
         res.status(422);
-        console.log('error while saving the user', err);
+        console.error('Error while saving the user, error in server', err);
         res.json({
           error: 'There was an error saving the user'
         });
-      });
+    };
 
   } else {
     res.status(422);
-    console.log('error while saving the user')
+    console.log('error while saving the user, invalid credentials')
     res.json({error: 'No valid data provided for user'});
   }
 };
@@ -106,7 +107,7 @@ const userPatch = async (req, res) => {
     user.password = req.body.password ? req.body.password : user.password;
     user.pin = req.body.pin ? req.body.pin : user.pin;
     user.name = req.body.name ? req.body.name : user.name;
-    user.lastname = req.body.lastname ? req.body.lastname : user.lastname;
+    user.lastName = req.body.lastName ? req.body.lastName : user.lastName;
     user.cellphone = req.body.cellphone ? req.body.cellphone : user.cellphone;
     user.birthday = req.body.birthday ? req.body.birthday : user.birthday;
     user.kids = req.body.kids ? req.body.kids : user.kids;

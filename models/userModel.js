@@ -19,7 +19,7 @@ const user = new mongoose.Schema({
         required: true,
         type: String
     },
-    lastname: {
+    lastName: {
         required: true,
         type: String
     },
