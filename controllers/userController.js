@@ -1,5 +1,8 @@
 const User = require("../models/userModel");
 const Kid = require("../models/kidModel");
+var { hashSync } = require ('bcryptjs')
+const {randomUUID} = require('crypto')
+
 var moment = require('moment');
 const { ConversationContextImpl } = require("twilio/lib/rest/conversations/v1/conversation");
 /**
@@ -12,20 +15,22 @@ const { ConversationContextImpl } = require("twilio/lib/rest/conversations/v1/co
 const userPost = async (req, res) => {
   let user = new User();
 
-  user.email = req.body.email;
-  user.password  = req.body.password;
-  user.pin  = req.body.pin;
-  user.name  = req.body.name;
-  user.lastName  = req.body.lastName;
-  user.cellphone  = req.body.cellphone;
-  user.state  = 'pending';
-  user.birthday  = moment(req.body.birthday).format('YYYY-MM-DD');
-  user.kids = [];
+  user.email = req.body.email
+  user.pin  = req.body.pin
+  user.name  = req.body.name
+  user.lastName  = req.body.lastName
+  user.cellphone  = req.body.cellphone
+  user.salt = randomUUID()
+  user.state  = 'pending'
+  user.birthday  = moment(req.body.birthday).format('YYYY-MM-DD')
+  user.kids = []
 
-  let today = new Date();
-  let birthday = new Date(user.birthday);
-  let age = today.getFullYear() - birthday.getFullYear();
-  let monthDiff = today.getMonth() - birthday.getMonth();
+  user.password  = hashSync(req.body.password)
+
+  let today = new Date()
+  let birthday = new Date(user.birthday)
+  let age = today.getFullYear() - birthday.getFullYear()
+  let monthDiff = today.getMonth() - birthday.getMonth()
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
       age--;
   }

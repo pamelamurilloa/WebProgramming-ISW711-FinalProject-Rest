@@ -1,6 +1,6 @@
 var passport = require('passport')
 var LocalStrategy = require('passport-local')
-var crypto = require ("node:crypto")
+var { hashSync, compareSync} = require ('bcryptjs')
 
 const User = require("./models/userModel");
 
@@ -13,14 +13,14 @@ passport.use(new LocalStrategy(
 
         if (!user) { return cb(null, false, { message: 'Incorrect email or password.' }); }
 
-        crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
-            if (err) { return cb(err); }
-            if (!crypto.timingSafeEqual(user.hashed_password, hashedPassword)) {
-                return cb(null, false, { message: 'Incorrect email or password.' });
-            }
-            return cb(null, user);
-        });
+        if (!compareSync(password, user.password)) {
+            return cb(null, false, { message: 'Incorrect email or password.' });
+        } 
+        
+        return cb(null, user);
     }
 ));
 
-module.exports = passport
+module.exports = {
+    passport
+}

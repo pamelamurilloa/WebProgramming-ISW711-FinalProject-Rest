@@ -1,6 +1,7 @@
-const User = require("../models/userModel");
-const Kid = require("../models/kidModel");
-const passport = require("../security");
+const User = require("../models/userModel")
+const Kid = require("../models/kidModel")
+const sendMessage = require('../messaging/sms')
+const {passport} = require("../security")
 
 /**
  * Compares passwords
@@ -21,6 +22,9 @@ const userConfirmCode = async (req, res) => {
           console.log('error while confirming the code', err)
           res.json({error: 'There was an error confirming the code'})
         }
+    } else {
+      res.status(401)
+      res.json({error:"Invalid code"})
     }
 }
 
@@ -31,7 +35,7 @@ const userLogin = async (req, res) => {
         sendMessage(req.user.cellphone, code) //Sends a code to the user's cellphone
         let user = await User.findById(req.user._id)
 
-        user.state = code;
+        user.code = code;
 
         try {
           const data = await user.save()
@@ -49,8 +53,7 @@ const userLogin = async (req, res) => {
 
 const loginHandler = [
   passport.authenticate('local', {session:false}),
-  userLogin,
-
+  userLogin
 ];
 
 const kidCompare = (req, res) => {
