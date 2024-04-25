@@ -65,25 +65,29 @@ const userConfirmPin = async (req, res) => {
     res.json(user);
   } catch (err) {
     res.status(404);
-    console.log('error while trying to find the kid', err)
+    console.log('error while trying to find the user', err)
     res.json({ error: "User doesnt exist" })
   }
 }
 
-const kidCompare = (req, res) => {
-    const childId = req.body.id;
-    const pin = req.body.pin;
+const kidCompare = async (req, res) => {
+    const childId = req.body._id;
+    const pin = parseInt(req.body.pin);
   
-    Kid.findOne({ _id: childId, pin: pin })
-    .then( (kid) => {
-      res.status(200);
-      res.json(kid);
-    })
-    .catch(err => {
+    try {
+      const kid = await Kid.findOne({ _id: childId, pin: pin })
+      if (kid) {
+        res.json(kid)
+      } else {
+        res.status(404);
+        res.json({ error: "Kid doesnt exist" })
+      }
+      
+    } catch (err) {
       res.status(404);
       console.log('error while trying to find the kid', err)
-      res.json({ error: "Kid doesnt exist" })
-    });
+      res.json({ error: err.message })
+    }
 }
 
   module.exports = {
