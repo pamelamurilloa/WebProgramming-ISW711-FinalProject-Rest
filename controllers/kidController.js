@@ -113,11 +113,12 @@ const kidGetAll = async (req, res) => {
  */
 
 const kidPatch = async (req, res) => {
+
     let kid = await Kid.findById(req.params.id)
     .catch(err => {
         res.status(422);
         console.log('error while trying to find the kid', err)
-        res.json({ error: "Kid doesnt exist" })
+        return res.json({ error: "Kid doesnt exist" })
     });
 
     kid.name = req.body.name ? req.body.name : kid.name;
@@ -157,7 +158,6 @@ const kidPatch = async (req, res) => {
         res.json({error: 'There was an error deleting the kid'});
     });
       
-    console.log();
     await User.findByIdAndUpdate(userId, { $pull: { kids: { $in: [req.params.id] } } })
     .then ( () => {
         res.status(200); // Saved
