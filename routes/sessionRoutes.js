@@ -3,12 +3,14 @@ const router = express.Router()
 
 const {
     loginHandler,
+    userConfirmPin,
     kidCompare,
     userConfirmCode
   } = require("../controllers/sessionController.js");
 
 router.post("/login", loginHandler);
 router.post("/login/code", userConfirmCode);
-router.post("/kids/:id/:pin", kidCompare); // TODO: change in file
+router.post("/login/pin", userConfirmPin)
+router.post("/kids", kidCompare);
 
 module.exports = router;

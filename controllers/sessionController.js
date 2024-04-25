@@ -56,9 +56,23 @@ const loginHandler = [
   userLogin
 ];
 
+const userConfirmPin = async (req, res) => {
+  const userId = req.body.userId;
+  const pin = parseInt(req.body.pin);
+  
+  try {
+    const user = await User.findOne({ _id: userId, pin: pin })
+    res.json(user);
+  } catch (err) {
+    res.status(404);
+    console.log('error while trying to find the kid', err)
+    res.json({ error: "User doesnt exist" })
+  }
+}
+
 const kidCompare = (req, res) => {
-    const childId = req.params.id;
-    const pin = req.params.pin;
+    const childId = req.body.id;
+    const pin = req.body.pin;
   
     Kid.findOne({ _id: childId, pin: pin })
     .then( (kid) => {
@@ -74,6 +88,7 @@ const kidCompare = (req, res) => {
 
   module.exports = {
     loginHandler,
+    userConfirmPin,
     kidCompare,
     userConfirmCode
   }
