@@ -44,34 +44,38 @@ const playlistPost = async (req, res) => {
 };
 
 const playlistPostVideo = async (req, res) => {
-  let videoName = req.body.name;
-  let videoUrl = req.body.url;
-  let videoDescription = req.body.description;
+  let videoName = req.body.name
+  let videoUrl = req.body.url
+  let videoDescription = req.body.description
 
   if (videoName && videoUrl && videoDescription) {
     try {
-      const playlist = await Playlist.findById(req.params.id);
+      const playlist = await Playlist.findById(req.params.id)
 
-      playlist.videos.push( {name: videoName, url: videoUrl, description: videoDescription} );
+      playlist.videos.push( {name: videoName, url: videoUrl, description: videoDescription} )
     
-      await playlist.save();
+      await playlist.save()
 
-      res.status(201); // Created
-      res.header({
-        'location': `/tubekids/playlists/?id=${playlist._id}`
-      });
+      res.status(201) // Created
+      // res.header({
+      //   'location': `/tubekids/playlists/?id=${playlist._id}`
+      // });
 
-      res.json(playlist);
+      return res.json(playlist.videos)
 
     } catch (err) {
       res.status(422);
       console.error(err);
       res.json({
-        error: 'No valid data provided for playlist'
+        error: 'Error finding the playlist'
       });
     }
+  } else {
+    res.status(400)
+    res.json({
+      error: 'No valid data provided for playlist'
+    });
   }
-  
 };
 
 
