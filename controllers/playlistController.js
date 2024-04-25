@@ -13,7 +13,7 @@ const playlistPost = async (req, res) => {
 
   playlist.name = req.body.name;
   playlist.user  = req.body.userId;
-  playlist.kids  = [];
+  playlist.kids  = req.body.kids ? req.body.kids : [];
   playlist.videos  = [];
 
   if (playlist.name && playlist.user) {
@@ -44,7 +44,6 @@ const playlistPost = async (req, res) => {
 };
 
 const playlistPostVideo = async (req, res) => {
-  console.log(req.params, req.body)
   let videoName = req.body.name;
   let videoUrl = req.body.url;
   let videoDescription = req.body.description;
