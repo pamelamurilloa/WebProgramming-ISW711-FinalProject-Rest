@@ -19,6 +19,10 @@ const playlist = new mongoose.Schema({
         url: {
             required: true,
             type: String
+        },
+        description: {
+            required: true,
+            type: String
         }    
     }]
 })

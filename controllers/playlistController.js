@@ -47,12 +47,13 @@ const playlistPostVideo = async (req, res) => {
   console.log(req.params, req.body)
   let videoName = req.body.name;
   let videoUrl = req.body.url;
+  let videoDescription = req.body.description;
 
-  if (videoName && videoUrl) {
+  if (videoName && videoUrl && videoDescription) {
     try {
       const playlist = await Playlist.findById(req.params.id);
 
-      playlist.videos.push( {name: videoName, url: videoUrl} );
+      playlist.videos.push( {name: videoName, url: videoUrl, description: videoDescription} );
     
       await playlist.save();
 
@@ -114,7 +115,7 @@ const playlistGetAll = (req, res) => {
 
 const playlistPatch = async (req, res) => {
 
-    let playlist = await playlist.findById(req.params.id)
+    let playlist = await Playlist.findById(req.params.id)
     .catch(err => {
       res.status(404);
       console.log('error while trying to find the user', err)
@@ -154,6 +155,7 @@ const playlistPatchVideo = async (req, res) => {
       if (video._id == req.params.videoId) {
         video.name = req.body.name ? req.body.name : video.name;
         video.url = req.body.url ? req.body.url : video.url;
+        video.description = req.body.description ? req.body.description : video.description;
       }
       return video;
     });
