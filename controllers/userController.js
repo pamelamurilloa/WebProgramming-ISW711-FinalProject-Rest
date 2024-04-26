@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const Playlist = require("../models/playlistModel");
 const Kid = require("../models/kidModel");
 var { hashSync } = require ('bcryptjs')
 const {randomUUID} = require('crypto')
@@ -39,7 +40,15 @@ const userPost = async (req, res) => {
     
     try {
       const data = await user.save()
-      console.log(data)
+
+      let playlist = new Playlist();
+
+      playlist.name = 'General';
+      playlist.user  = data._id;
+      playlist.kids  = [];
+      playlist.videos  = [];
+      
+      await playlist.save()
 
       res.status(201); // Created
       res.json(data)

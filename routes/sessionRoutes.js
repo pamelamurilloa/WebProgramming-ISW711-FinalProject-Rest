@@ -10,7 +10,7 @@ const {
 
 router.post("/login", loginHandler);
 router.post("/login/code", userConfirmCode);
-router.post("/login/pin", userConfirmPin)
+router.post("/pin", userConfirmPin)
 router.post("/kids", kidCompare);
 
 module.exports = router;

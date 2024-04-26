@@ -25,7 +25,7 @@ const userConfirmCode = async (req, res) => {
           res.json({error: 'There was an error confirming the code'})
         }
     } else {
-      res.status(401)
+      res.status(403)
       res.json({error:"Invalid code"})
     }
 }
@@ -45,6 +45,7 @@ const userLogin = async (req, res) => {
 
         } catch (error) {
           res.status(422)
+          console.log(error)
           res.json({error: 'There was an error saving the user'});
         }
     } else {

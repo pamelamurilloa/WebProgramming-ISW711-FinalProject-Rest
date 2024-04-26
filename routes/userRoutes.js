@@ -11,7 +11,7 @@ const {
 
 router.get("/:id", userGet);
 router.get("/", userGetAll);
-router.post("/", userPost);
+router.post("/register", userPost);
 router.patch("/:id", userPatch);
 router.put("/:id", userPatch);
 router.delete("/:id", userDelete);
