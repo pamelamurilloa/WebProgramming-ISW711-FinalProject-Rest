@@ -1,7 +1,7 @@
 const User = require("../models/userModel")
 const Kid = require("../models/kidModel")
 const sendMessage = require('../messaging/sms')
-const {passport} = require("../security")
+const {passport, generateToken} = require("../security")
 
 /**
  * Compares passwords
@@ -14,9 +14,11 @@ const userConfirmCode = async (req, res) => {
     let user = await User.findById(req.body.userId)
     if (user.code && user.code === req.body.code) {
         user.code = null
+        const response = {_id: user._id, email: user.email, name: user.name, lastName: user.lastName}
+        response.token = generateToken(response)
         try {
-          const data = await user.save()
-          res.json(data)
+          await user.save()
+          res.json(response)
         } catch (error) {
           res.status(422)
           console.log('error while confirming the code', err)
